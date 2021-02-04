@@ -17,6 +17,8 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 url = "https://raw.githubusercontent.com/alamine53/espn-scrape/main/standings.csv"
+url = "standings.csv"
+
 df = pd.read_csv(url)
 
 # drop nas
