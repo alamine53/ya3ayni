@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.io as pio
 from dash.dependencies import Input, Output
+from datetime import datetime
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -21,6 +22,7 @@ url = "standings.csv"
 
 df = pd.read_csv(url)
 
+print(df)
 # drop nas
 df = df[df['Team'].notna()]
 
@@ -97,7 +99,7 @@ app.layout = html.Div(children=[
 
 	    # dropdown 2
 	    html.Div([
-			html.Label('Select Chart'),
+			html.Label('Select Type'),
 			    dcc.Dropdown(
 			    	id = 'chart-selection',
 					options=[
@@ -108,6 +110,18 @@ app.layout = html.Div(children=[
 			        ),
 	    	], className = 'six columns'),
 	   	], className='row'),
+    	
+	  #   html.Div([
+			# html.Label('Select Dates'), 
+			# 	dcc.DatePickerRange(
+   #                          id='datepickerrange',
+   #                          start_date=df['date'].min(),
+   #                          end_date=df['date'].max(),
+   #                          min_date_allowed=df['date'].min(),
+   #                          max_date_allowed=df['date'].max().date(),
+   #                          display_format='D MMM YYYY'
+   #                          ),
+	  #   	], className = 'six columns'),
 
     # first row of charts
     html.Div([
