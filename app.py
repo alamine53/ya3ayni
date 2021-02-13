@@ -4,25 +4,26 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc 
 import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.io as pio
 from dash.dependencies import Input, Output
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
-url = "https://raw.githubusercontent.com/alamine53/espn-scrape/main/standings.csv"
 url = "standings.csv"
 
 df = pd.read_csv(url)
 
-print(df)
+df['datetime'] = pd.to_datetime(df['date'])
+
 # drop nas
 df = df[df['Team'].notna()]
 
@@ -83,19 +84,23 @@ app.layout = html.Div(children=[
 		html.H4(children='''
             Display advanced stats for ESPN fantasy league.
             '''),
-		], className = 'header'),
+		html.P('Last updated: Bas ommak tole3 3abela', style={'font-style': 'italic'})
+			], 
+			# end header class
+			style={'text-align': 'center'}, 
+			className = 'header'),
 
-    # dropdown 1
-    html.Div([
-
+    html.Div([    
+    
+    	# dropdown 1
 	    html.Div([
 			html.Label('Select Team'),
 			    dcc.Dropdown(
 			    	id = 'team-selection',
 					options=[{'label': i, 'value': i} for i in available_teams],
-			        value='Anthony'
+			        value='Ramzy'
 			        ),
-	    	], className = 'six columns'),
+	    	], className = 'four columns'),
 
 	    # dropdown 2
 	    html.Div([
@@ -108,9 +113,28 @@ app.layout = html.Div(children=[
 					],
 			        value='totals'
 			        ),
-	    	], className = 'six columns'),
+	    	], className = 'four columns'),
+
+    	# dropdown 3
+	    html.Div([
+			html.Label('Select Dates'),
+			    dcc.Dropdown(
+			    	id = 'date-selection',
+					options=[
+						{'label':'Last 5', 'value': 'last5'},
+						{'label':'Last 15', 'value': 'last15'},
+						{'label':'Last 30', 'value': 'last30'},
+						{'label':'Since Jan 1st', 'value': 'sincebeg'},
+
+					],
+			        value='last30'
+			        ),
+
+	    	], className = 'four columns'),
+
+	    # end row
 	   	], className='row'),
-    	
+
 	  #   html.Div([
 			# html.Label('Select Dates'), 
 			# 	dcc.DatePickerRange(
@@ -225,9 +249,23 @@ app.layout = html.Div(children=[
     Output('graph8', 'figure'),
     Output('graph9', 'figure'),
     Input('team-selection', 'value'),
-    Input('chart-selection', 'value'))
-def update_dashboard(team_name, per_game):
+    Input('chart-selection', 'value'),
+    Input('date-selection', 'value'))
+
+# def update_date(n):
+# 	return print('Last updated:', str(date.today()))
+
+def update_dashboard(team_name, per_game, date_range):
+
 	df = pd.read_csv(url)
+	df['dates'] = pd.to_datetime(df['date'])
+
+	if date_range == 'last5':
+		df = df[df['dates'] > max(df['dates']) - timedelta(5)]
+	elif date_range == 'last15':
+		df = df[df['dates'] > max(df['dates']) - timedelta(15)]
+	elif date_range == 'last30':
+		df = df[df['dates'] > max(df['dates']) - timedelta(30)]
 
 	# drop nas
 	df = df[df['Team'].notna()]
