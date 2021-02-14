@@ -82,7 +82,7 @@ app.layout = html.Div(children=[
 		html.H1(children='Ya 3ayni Analytics'),
 		# subtitle
 		html.H4(children='''
-            Display advanced stats for ESPN fantasy league.
+            Advanced stats for ESPN fantasy league.
             '''),
 		html.P('Last updated: Bas ommak tole3 3abela', style={'font-style': 'italic'})
 			], 
